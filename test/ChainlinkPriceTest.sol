@@ -46,6 +46,10 @@ contract ChainlinkPriceTest is Test {
         Data memory ETHBTC = Data(address(ETHUSD), address(BTCUSD));
         vm.expectRevert();
         (uint256 unused,) = oracle.getPrice(address(100), address(200), abi.encode(ETHBTC));
+        ETHUSD.setAnswer(69, 3500e8, block.timestamp - 2400);
+        BTCUSD.setAnswer(69, 65000e8, block.timestamp - 86400);
+        vm.expectRevert();
+        (unused,) = oracle.getPrice(address(100), address(200), abi.encode(ETHBTC));
     }
 
     function testFuzz_lessThanUint128(int256 _ethPrice, int256 _amplPrice) public {
